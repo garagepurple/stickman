@@ -1,0 +1,1 @@
+c:\temp\StickMan\StickMan\SkeletonData\bin\Debug\SkeletonData.exe.config
