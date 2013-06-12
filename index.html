@@ -94,6 +94,35 @@
         }
     }
     
+    function initWebsocket(host)
+    {
+        if (!('WebSocket' in window))
+            return false;
+
+        var connection = new WebSocket(host);
+
+        connection.onopen = function()
+        {
+            console.log('Connection opened');
+        }
+
+        connection.onclose = function()
+        {
+            console.log('Connection closed');
+        }
+
+        connection.onerror = function(error)
+        {
+            console.log('Error is detected: ' + error);
+        }
+ 
+        connection.onmessage = function(e)
+        {
+            var server_message = e.data;
+            console.log(server_message);
+        }
+    }
+    
     function init() 
     {
         container = document.createElement( 'div' );
@@ -128,6 +157,7 @@
         container.appendChild( renderer.domElement );
 
         window.addEventListener( 'resize', onWindowResize, false );
+        initWebsocket("ws://garagepurple.cloudapp.net:2012");
     }
 
     function onWindowResize()
