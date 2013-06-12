@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Client</title>
+<!--
+<script src="/client.js" type="text/javascript" charset="utf-8"></script>
+  <link rel="stylesheet" href="/client.css">
+-->
+</head>
+<body>
+  <h1>Client Example</h1>
+
+  <script>
+
+        if ('WebSocket' in window){
+        document.write('WebSocket is supported');
+
+        var connection = new WebSocket('ws://localhost:2013');
+
+        connection.onopen = function()
+        {
+            document.write('Connection opened');
+        }
+
+        connection.onclose = function()
+        {
+            document.write('Connection closed');
+        }
+
+        connection.onerror = function(error)
+        {
+            document.write('Error is detected: ' + error);
+        }
+ 
+        connection.onmessage = function(e)
+        {
+            var server_message = e.data;
+            document.write(server_message);
+        }
+    } else {
+        document.write('WebSocket is NOT supported');
+    }
+ 
+  </script>
+</body>
+</html>
+
+
