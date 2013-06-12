@@ -10,18 +10,21 @@
 		</style>
 </head>
 <body>
-<script src="scripts/three.min.js">
-</script>
+<script src="scripts/three.min.js"></script>
+<script src="scripts/FirstPersonControls.js"></script>
 <script>
     var container;
 
     var camera, scene, renderer;
     var pointLight;
     
-    var sphereRadius = 50;
+    var sphereRadius = 5;
     
     // this is a dictionnary of joints by player, formatted as such: <playerId, <jointName, sphere>>
     var playersJoints = {};
+    
+    var controls;
+    var clock = new THREE.Clock();
     
     var dummyPlayers = {
         "Player1": {
@@ -76,8 +79,16 @@
         document.body.appendChild( container );
 
         camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 2000 );
-        camera.position.set( 0, 200, 800 );
+        camera.position.set( 0, 100, 100 );
 
+        controls = new THREE.FirstPersonControls( camera );
+        controls.movementSpeed = 10;
+        controls.lookSpeed = 0.125;
+        controls.lookVertical = true;
+        controls.constrainVertical = true;
+        controls.verticalMin = 1.1;
+        controls.verticalMax = 2.2;
+        
         scene = new THREE.Scene();
 
         drawPlayer("Player1", dummyPlayers["Player1"]);
@@ -101,6 +112,7 @@
         camera.updateProjectionMatrix();
 
         renderer.setSize( window.innerWidth, window.innerHeight );
+        controls.handleResize();
     }
 
     
@@ -114,11 +126,6 @@
     {
         var timer = 0.0001 * Date.now();
 
-        camera.position.x = Math.cos( timer ) * 1000;
-        camera.position.z = Math.sin( timer ) * 1000;
-
-        camera.lookAt( scene.position );
-        
         pointLight.position.x = Math.sin( timer * 7 ) * 300;
         pointLight.position.y = Math.cos( timer * 5 ) * 400;
         pointLight.position.z = Math.cos( timer * 3 ) * 300;
@@ -126,6 +133,7 @@
         dummyPlayers["Player1"]["Head"].x += 5;
         drawPlayer("Player1", dummyPlayers["Player1"]);
        
+        controls.update( clock.getDelta() );
         renderer.render( scene, camera );
     }
 
