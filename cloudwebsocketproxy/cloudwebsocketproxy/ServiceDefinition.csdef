@@ -4,5 +4,8 @@
     <Imports>
       <Import moduleName="Diagnostics" />
     </Imports>
+    <Endpoints>
+      <InputEndpoint name="ProxyEndpoint" protocol="tcp" port="2012" />
+    </Endpoints>
   </WorkerRole>
 </ServiceDefinition>
