@@ -6,4 +6,10 @@
       <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="DefaultEndpointsProtocol=https;AccountName=audiocontroller;AccountKey=TaUfV45EZiqU77exMnkQhlCJvIRACPHZGd3AtiKWMkohLODMdQNCoR7SmFwWNLc1BCT2Get16m1SeFhNBfNu+A==" />
     </ConfigurationSettings>
   </Role>
+  <Role name="WebRole2">
+    <Instances count="1" />
+    <ConfigurationSettings>
+      <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="DefaultEndpointsProtocol=https;AccountName=audiocontroller;AccountKey=TaUfV45EZiqU77exMnkQhlCJvIRACPHZGd3AtiKWMkohLODMdQNCoR7SmFwWNLc1BCT2Get16m1SeFhNBfNu+A==" />
+    </ConfigurationSettings>
+  </Role>
 </ServiceConfiguration>

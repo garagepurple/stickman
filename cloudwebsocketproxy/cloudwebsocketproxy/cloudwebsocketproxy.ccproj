@@ -37,6 +37,14 @@
     <ServiceConfiguration Include="ServiceConfiguration.Cloud.cscfg" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\WebRole2\WebRole2.csproj">
+      <Name>WebRole2</Name>
+      <Project>{ce3f7d74-0a49-4963-a887-e9214df48989}</Project>
+      <Private>True</Private>
+      <RoleType>Web</RoleType>
+      <RoleName>WebRole2</RoleName>
+      <UpdateDiagnosticsConnectionStringOnPublish>True</UpdateDiagnosticsConnectionStringOnPublish>
+    </ProjectReference>
     <ProjectReference Include="..\WebSocketProxyRole\WebSocketProxyRole.csproj">
       <Name>WebSocketProxyRole</Name>
       <Project>{e0310f52-8909-4ac5-855e-55744b9113fb}</Project>
