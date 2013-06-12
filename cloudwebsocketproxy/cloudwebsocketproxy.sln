@@ -5,9 +5,16 @@ Project("{CC5FD16D-436D-48AD-A40C-5A424C6E3E79}") = "cloudwebsocketproxy", "clou
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebSocketProxyRole", "WebSocketProxyRole\WebSocketProxyRole.csproj", "{E0310F52-8909-4AC5-855E-55744B9113FB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperWebSocket", "..\..\..\..\Dev\superwebsocket\SuperWebSocket\SuperWebSocket.csproj", "{2DC79E40-BB70-4F6A-B378-905F2FBC6E97}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperWebSocket", "..\..\..\superwebsocket\SuperWebSocket\SuperWebSocket.csproj", "{2DC79E40-BB70-4F6A-B378-905F2FBC6E97}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebRole2", "WebRole2\WebRole2.csproj", "{CE3F7D74-0A49-4963-A887-E9214DF48989}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{FC1D389F-75DE-4951-9BC7-AEBCAB0ED80E}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
