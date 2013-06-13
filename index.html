@@ -145,7 +145,14 @@
         connection.onmessage = function(e)
         {
             var server_message = e.data;
-            console.log(server_message);
+            try
+            {
+                players = JSON.parse(server_message);
+            }
+            catch (e)
+            {
+                console.log("Failed to parse JSON: " + e);
+            }
         }
     }
     
@@ -169,8 +176,6 @@
         
         scene = new THREE.Scene();
 
-        for (var playerId in players)
-            drawPlayer(playerId, players[playerId]);
         // Lights
         pointLight = new THREE.PointLight( 0xffffff, 1 );
         scene.add( pointLight );
