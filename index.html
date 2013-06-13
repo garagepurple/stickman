@@ -117,12 +117,41 @@
     
     function drawPlayer(playerId, player)
     {
+        color = 0xFF0000;
         for (var jointName in player)
         {
             pos = player[jointName];
-            drawSphere(playerId, jointName, pos.X, pos.Y, pos.Z, 0xFF0000);
+            drawSphere(playerId, jointName, pos.X, pos.Y, pos.Z, color);
         }
-        drawBones(playerId, "Head", "Spine", 0x0000FF);
+        // Render Torso
+        drawBones(playerId, "Head", "ShoulderCenter", color);
+        drawBones(playerId, "ShoulderCenter", "ShoulderLeft", color);
+        drawBones(playerId, "ShoulderCenter", "ShoulderRight", color);
+        drawBones(playerId, "ShoulderCenter", "Spine", color);
+        drawBones(playerId, "Spine", "HipCenter", color);
+        drawBones(playerId, "HipCenter", "HipLeft", color);
+        drawBones(playerId, "HipCenter", "HipRight", color);
+
+        // Left Arm
+        drawBones(playerId, "ShoulderLeft", "ElbowLeft", color);
+        drawBones(playerId, "ElbowLeft", "WristLeft", color);
+        drawBones(playerId, "WristLeft", "HandLeft", color);
+
+        // Right Arm
+        drawBones(playerId, "ShoulderRight", "ElbowRight", color);
+        drawBones(playerId, "ElbowRight", "WristRight", color);
+        drawBones(playerId, "WristRight", "HandRight", color);
+
+        // Left Leg
+        drawBones(playerId, "HipLeft", "KneeLeft", color);
+        drawBones(playerId, "KneeLeft", "AnkleLeft", color);
+        drawBones(playerId, "AnkleLeft", "FootLeft", color);
+
+        // Right Leg
+        drawBones(playerId, "HipRight", "KneeRight", color);
+        drawBones(playerId, "KneeRight", "AnkleRight", color);
+        drawBones(playerId, "AnkleRight", "FootRight", color);
+
     }
     
     function initWebsocket(host)
@@ -246,10 +275,10 @@
         pointLight.position.z = Math.cos( timer * 3 ) * 300;
         
         camera.position.x += ( mouseX - camera.position.x ) * .05;
-        camera.position.y += ( - mouseY - camera.position.y ) * .05;
+        camera.position.y += ( mouseY - camera.position.y ) * .05;
         camera.lookAt( scene.position );
         
-        
+        updateScene(players);
        
         renderer.render( scene, camera );
     }
