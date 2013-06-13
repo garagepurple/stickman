@@ -17,7 +17,8 @@
     var camera, scene, renderer;
     var pointLight;
     
-    var sphereRadius = 0.05;
+    var sphereRadius = 0.005;
+    var headRadius = 0.05;
 
     var mouseFactor = 0.005;    
     
@@ -25,6 +26,10 @@
     var playersJoints = {};
     
     var clock = new THREE.Clock();
+
+    //var wsHost = "ws://garagepurple.cloudapp.net:2012";
+    var connection = null;
+    var wsHost = "ws://jzheng9:2012";
     
     var mouseX = 0, mouseY = 0;
     var windowHalfX = window.innerWidth / 2;
@@ -54,10 +59,7 @@
         "AnkleRight":{"X":0.135660678,"Y":0.0545658,"Z":0.384651929},
         "FootRight":{"X":0.171393216,"Y":0.04367411,"Z":0.485775828}}};
     */
-    var players = {"player1": {
-        "Head": {"X": 0.1, "Y": 0.5, "Z": 0.1},
-        "Spine": {"X": 0.1, "Y": 0.1, "Z":0.1 },
-    }};
+    var players = null;
     init();
     animate();    
 
@@ -72,7 +74,7 @@
         {
             material = new THREE.MeshLambertMaterial( { color: color, shading: THREE.SmoothShading } );
         
-            var geometry = new THREE.SphereGeometry( sphereRadius, 32, 16 );
+            var geometry = new THREE.SphereGeometry( jointName == "Head" ? headRadius : sphereRadius, 32, 16 );
             var sphere = new THREE.Mesh( geometry, material );
 
             sphere.position.x = x;
@@ -121,7 +123,7 @@
         for (var jointName in player)
         {
             pos = player[jointName];
-            drawSphere(playerId, jointName, pos.X, pos.Y, pos.Z, color);
+            drawSphere(playerId, jointName, - pos.X, pos.Y, pos.Z, color);
         }
         // Render Torso
         drawBones(playerId, "Head", "ShoulderCenter", color);
@@ -159,7 +161,7 @@
         if (!('WebSocket' in window))
             return false;
 
-        var connection = new WebSocket(host);
+        connection = new WebSocket(host);
 
         connection.onopen = function()
         {
@@ -179,6 +181,11 @@
         connection.onmessage = function(e)
         {
             var server_message = e.data;
+            if (!server_message.length)
+            {
+                players = [];
+                return ;
+            }
             try
             {
                 players = JSON.parse(server_message);
@@ -196,7 +203,7 @@
         document.body.appendChild( container );
 
         camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.0001, 2000 );
-        camera.position.set(-2, 0, 0);
+        camera.position.set(0, 0, -2);
         camera.lookAt(0, 0, 0);
 
         scene = new THREE.Scene();
@@ -213,7 +220,7 @@
         container.appendChild( renderer.domElement );
 
         window.addEventListener( 'resize', onWindowResize, false );
-        initWebsocket("ws://garagepurple.cloudapp.net:2012");
+        initWebsocket(wsHost);
     }
 
     function onWindowResize()
@@ -235,6 +242,7 @@
     
     function removePlayerFromScene(playerId)
     {
+        console.log("Removing player " + playerId);
         if (!(playerId in playersJoints))
             return ;
         var joints = playersJoints[playerId];
@@ -242,16 +250,16 @@
         {
             scene.remove(joints[objId]);
         }
-        playersJoints[playerId] = null;
+        delete playersJoints[playerId];
     }
     
     function updateScene(payload)
     {
         // Check for removed players first
-        for (var oldPlayer in players)
+        for (var oldPlayer in playersJoints)
         {
             if (!(oldPlayer in payload))
-                removePlayerFromScene(players[oldPlayer]);
+                removePlayerFromScene(oldPlayer);
         }
         
         for (var playerId in payload)
