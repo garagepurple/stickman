@@ -27,9 +27,9 @@
     
     var clock = new THREE.Clock();
 
-    //var wsHost = "ws://garagepurple.cloudapp.net:2012";
+    var wsHost = "ws://skypeaudioqe-vm.cloudapp.net:2012";
+    //var wsHost = "ws://jzheng9:2012";
     var connection = null;
-    var wsHost = "ws://jzheng9:2012";
     
     var mouseX = 0, mouseY = 0;
     var windowHalfX = window.innerWidth / 2;
@@ -119,7 +119,7 @@
     
     function drawPlayer(playerId, player)
     {
-        color = 0xFF0000;
+        color = 0x0000FF;
         for (var jointName in player)
         {
             pos = player[jointName];
@@ -210,10 +210,10 @@
 
         // Lights
         pointLight = new THREE.PointLight( 0xffffff, 1 );
-        scene.add( pointLight );
+        //scene.add( pointLight );
         
         // Lights
-        scene.add( new THREE.AmbientLight( 0x111111 ) );
+        scene.add( new THREE.AmbientLight( 0x0000AA ) );
 
         renderer = new THREE.WebGLRenderer( { antialias: true } );
         renderer.setSize( window.innerWidth, window.innerHeight );
