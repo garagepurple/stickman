@@ -423,19 +423,19 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
             if (iFrameCount % 30 != 0)
                 return;
 
-            System.Console.WriteLine("------------------------");
-            System.Console.WriteLine("Skeleton {0}:", skeleton.TrackingId);
+            //System.Console.WriteLine("------------------------");
+            //System.Console.WriteLine("Skeleton {0}:", skeleton.TrackingId);
             foreach (Joint joint in skeleton.Joints)
             {
                 Point point = this.SkeletonPointToScreen(joint.Position);
-                System.Console.WriteLine("{0} {1} {2} {3} {4} {5} {6}",
-                    joint.TrackingState,
-                    joint.JointType,
-                    joint.Position.X,
-                    joint.Position.Y,
-                    joint.Position.Z,
-                    point.X,
-                    point.Y);
+                //System.Console.WriteLine("{0} {1} {2} {3} {4} {5} {6}",
+                //    joint.TrackingState,
+                //    joint.JointType,
+                //    joint.Position.X,
+                //    joint.Position.Y,
+                //    joint.Position.Z,
+                //    point.X,
+                //    point.Y);
 
 /*                if (joint.TrackingState == JointTrackingState.Tracked)
                 {
@@ -535,10 +535,10 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
             }
 #else
             string str = JsonConvert.SerializeObject(jsonData);
-            if (numCalls % 30 == 0)
-            {
-                Console.WriteLine(str);
-            }
+            //if (numCalls % 30 == 0)
+            //{
+            //    Console.WriteLine(str);
+            //}
             return str;
 
 #endif

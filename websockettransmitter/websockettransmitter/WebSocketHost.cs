@@ -60,9 +60,16 @@ namespace websockettransmitter
         {
             if (clientOpen == true)
                 client.Send(message);
-            foreach (var s in sessions)
+            try
             {
-                s.Send(message);
+                foreach (var s in sessions)
+                {
+                    s.Send(message);
+                }
+            }
+            catch (Exception ex) 
+            {
+                Console.WriteLine("Exception in Send(): {0}", ex.ToString());
             }
         }
 
