@@ -18,6 +18,8 @@
     var pointLight;
     
     var sphereRadius = 0.05;
+
+    var mouseFactor = 0.005;    
     
     // this is a dictionnary of joints by player, formatted as such: <playerId, <jointName, sphere>>
     var playersJoints = {};
@@ -201,9 +203,34 @@
         requestAnimationFrame( animate );
         render();
     }
-
-    var mouseFactor = 0.005;
     
+    function removePlayerFromScene(playerId)
+    {
+        if (!(playerId in playersJoints))
+            return ;
+        var joints = playersJoints[playerId];
+        for (var objId in joints)
+        {
+            scene.remove(joints[objId]);
+        }
+        playersJoints[playerId] = null;
+    }
+    
+    function updateScene(payload)
+    {
+        // Check for removed players first
+        for (var oldPlayer in players)
+        {
+            if (!(oldPlayer in payload))
+                removePlayerFromScene(players[oldPlayer]);
+        }
+        
+        for (var playerId in payload)
+        {
+            drawPlayer(playerId, payload[playerId]);
+        }
+    }
+
     function onDocumentMouseMove(event) 
     {
         mouseX = ( event.clientX - windowHalfX ) * mouseFactor;
@@ -222,9 +249,7 @@
         camera.position.y += ( - mouseY - camera.position.y ) * .05;
         camera.lookAt( scene.position );
         
-        players["player1"]["Head"].X = Math.sin( timer * 100 ) * 10;
-        players["player1"]["Head"].Z = Math.sin( timer * 100 ) * 10;
-        drawPlayer("player1", players["player1"]);
+        
        
         renderer.render( scene, camera );
     }
