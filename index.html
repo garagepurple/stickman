@@ -18,7 +18,7 @@
     var camera, scene, renderer;
     var pointLight;
     
-    var sphereRadius = 0.005;
+    var sphereRadius = 0.05;
     
     // this is a dictionnary of joints by player, formatted as such: <playerId, <jointName, sphere>>
     var playersJoints = {};
@@ -27,38 +27,40 @@
     var clock = new THREE.Clock();
   
 
-    var players = {"8": {
+   /* var players = {"8": {
         "HipCenter":{"X":0.0,"Y":0.0,"Z":0.0},
         "Spine":{"X":0.0,"Y":0.0,"Z":0.0},
         "ShoulderCenter":{"X":0.0,"Y":0.0,"Z":0.0},
         "Head":{"X":0.08668527,"Y":0.0220835712,"Z":0.319103956},
-    "ShoulderLeft":{"X":0.0,"Y":0.0,"Z":0.0},
-    "ElbowLeft":{"X":0.108794481,"Y":0.009790122,"Z":0.319360435},"WristLeft":{"X":0.2020339,"Y":-0.0248778015,"Z":0.5918199},
-    "HandLeft":{"X":0.231782481,"Y":0.0392407924,"Z":0.6061543},"ShoulderRight":{"X":0.0,"Y":0.0,"Z":0.0},
-    "ElbowRight":{"X":0.108968683,"Y":0.007372449,"Z":0.319366753},"WristRight":{"X":0.21582225,"Y":0.0241406485,"Z":0.5886469},
-    "HandRight":{"X":0.2514401,"Y":0.029730048,"Z":0.682654142},"HipLeft":{"X":0.0,"Y":0.0,"Z":0.0},
-    "KneeLeft":{"X":0.0,"Y":0.0,"Z":0.0},"AnkleLeft":{"X":0.122794874,"Y":0.0340408348,"Z":0.391988426},"FootLeft":{"X":0.164369971,"Y":0.0492028147,"Z":0.490289539},"HipRight":{"X":0.0,"Y":0.0,"Z":0.0},
-    "KneeRight":{"X":0.0,"Y":0.0,"Z":0.0},"AnkleRight":{"X":0.135660678,"Y":0.0545658,"Z":0.384651929},"FootRight":{"X":0.171393216,"Y":0.04367411,"Z":0.485775828}}}
-
-
-    
-    
-/*    var players = {
-        "Player1": {
-            "Knee": {"X": 0, "Y": 0, "Z": 0},
-            "Head": {"X": 0, "Y": 100, "Z": 0},
-            "RightHand": {"X": 100, "Y": 50, "Z": 0},
-        }
-    };
-*/    
+        "ShoulderLeft":{"X":0.0,"Y":0.0,"Z":0.0},
+        "ElbowLeft":{"X":0.108794481,"Y":0.009790122,"Z":0.319360435},
+        "WristLeft":{"X":0.2020339,"Y":-0.0248778015,"Z":0.5918199},
+        "HandLeft":{"X":0.231782481,"Y":0.0392407924,"Z":0.6061543},
+        "ShoulderRight":{"X":0.0,"Y":0.0,"Z":0.0},
+        "ElbowRight":{"X":0.108968683,"Y":0.007372449,"Z":0.319366753},
+        "WristRight":{"X":0.21582225,"Y":0.0241406485,"Z":0.5886469},
+        "HandRight":{"X":0.2514401,"Y":0.029730048,"Z":0.682654142},
+        "HipLeft":{"X":0.0,"Y":0.0,"Z":0.0},
+        "KneeLeft":{"X":0.0,"Y":0.0,"Z":0.0},
+        "AnkleLeft":{"X":0.122794874,"Y":0.0340408348,"Z":0.391988426},
+        "FootLeft":{"X":0.164369971,"Y":0.0492028147,"Z":0.490289539},
+        "HipRight":{"X":0.0,"Y":0.0,"Z":0.0},
+        "KneeRight":{"X":0.0,"Y":0.0,"Z":0.0},
+        "AnkleRight":{"X":0.135660678,"Y":0.0545658,"Z":0.384651929},
+        "FootRight":{"X":0.171393216,"Y":0.04367411,"Z":0.485775828}}};
+    */
+    var players = {"player1": {
+        "Head": {"X": 0.1, "Y": 0.5, "Z": 0.1},
+        "Spine": {"X": 0.1, "Y": 0.1, "Z":0.1 },
+    }};
     init();
     animate();    
 
     function drawSphere(playerId, jointName, x, y, z, color)
     {
         // Ignore missing/invalid joints:
-        if (x == 0 && y == 0 && z == 0)
-            return ;
+        //if (x == 0 && y == 0 && z == 0)
+          //  return ;
         if (!(playerId in playersJoints))
             playersJoints[playerId] = {};
         if (!(jointName in playersJoints[playerId]))
@@ -85,6 +87,30 @@
         }
     }
     
+    function drawBones(playerId, origin, target, color)
+    {
+        if (!(origin in playersJoints[playerId]) || !(target in playersJoints[playerId]))
+            return;
+        var boneName = origin + target;
+        if (!(boneName in playersJoints[playerId]))
+        {
+            var lineMaterial = new THREE.LineBasicMaterial({color: color});
+            var geometry = new THREE.Geometry();
+            geometry.vertices.push(playersJoints[playerId][origin].position);
+            geometry.vertices.push(playersJoints[playerId][target].position);
+            var line = new THREE.Line(geometry, lineMaterial);
+            scene.add(line);   
+            playersJoints[playerId][boneName] = line;
+            alert("blork");
+        }
+        else
+        {
+            // No need to update the position itself, the position is a reference to the actual sphere's position
+            var line = playersJoints[playerId][boneName];
+            line.geometry.verticesNeedUpdate = true;
+        }
+    }
+    
     function drawPlayer(playerId, player)
     {
         for (var jointName in player)
@@ -92,6 +118,7 @@
             pos = player[jointName];
             drawSphere(playerId, jointName, pos.X, pos.Y, pos.Z, 0xFF0000);
         }
+        drawBones(playerId, "Head", "Spine", 0x0000FF);
     }
     
     function initWebsocket(host)
@@ -183,7 +210,11 @@
         pointLight.position.x = Math.sin( timer * 7 ) * 300;
         pointLight.position.y = Math.cos( timer * 5 ) * 400;
         pointLight.position.z = Math.cos( timer * 3 ) * 300;
-     
+        
+        players["player1"]["Head"].X = Math.sin( timer * 100 ) * 10;
+        players["player1"]["Head"].Z = Math.sin( timer * 100 ) * 10;
+        drawPlayer("player1", players["player1"]);
+       
         controls.update( clock.getDelta() );
         renderer.render( scene, camera );
     }
