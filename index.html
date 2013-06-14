@@ -25,7 +25,8 @@
     var sphereRadius = 0.005;
     var headRadius = 0.07;
 
-    var mouseFactor = 0.005;    
+    var mouseFactor = 0.005;
+    var camInit = false;
     
     // this is a dictionnary of joints by player, formatted as such: <playerId, <jointName, sphere>>
     var playersJoints = {};
@@ -302,6 +303,13 @@
        
         controls.update( clock.getDelta() );
         renderer.render( scene, camera );
+        
+        // Work around a camera bug
+        if (camInit == false)
+        {
+            camInit = true;
+            controls.freeze = true;
+        }
     }
 
 </script>
