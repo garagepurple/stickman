@@ -13,6 +13,10 @@
 <script src="scripts/three.min.js"></script>
 <script>
     var container;
+    var colorsAvailable = new Array();
+    colorsAvailable.push(0xFF0000);
+    colorsAvailable.push(0x0000FF);
+    var colors = {};
 
     var camera, scene, renderer;
     var pointLight;
@@ -72,7 +76,7 @@
             playersJoints[playerId] = {};
         if (!(jointName in playersJoints[playerId]))
         {
-            material = new THREE.MeshLambertMaterial( { color: color, shading: THREE.SmoothShading } );
+            material = new THREE.MeshBasicMaterial( { color: color, shading: THREE.SmoothShading } );
         
             var geometry = new THREE.SphereGeometry( jointName == "Head" ? headRadius : sphereRadius, 32, 16 );
             var sphere = new THREE.Mesh( geometry, material );
@@ -119,7 +123,14 @@
     
     function drawPlayer(playerId, player)
     {
-        color = 0x0000FF;
+        var color;
+        if (!(playerId in colors))
+        {
+            color = colorsAvailable.pop();
+            colors[playerId] = color;
+        }
+        else
+            color = colors[playerId];
         for (var jointName in player)
         {
             pos = player[jointName];
@@ -213,7 +224,7 @@
         //scene.add( pointLight );
         
         // Lights
-        scene.add( new THREE.AmbientLight( 0x0000AA ) );
+        scene.add( new THREE.AmbientLight( 0xAAAAAA ) );
 
         renderer = new THREE.WebGLRenderer( { antialias: true } );
         renderer.setSize( window.innerWidth, window.innerHeight );
@@ -251,6 +262,9 @@
             scene.remove(joints[objId]);
         }
         delete playersJoints[playerId];
+        var color = colors[playerId];
+        delete colors[playerId];
+        colorsAvailable.push(color);
     }
     
     function updateScene(payload)
