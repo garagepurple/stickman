@@ -47,7 +47,7 @@ namespace websockettransmitter
             }
 
             // Connect to the cloud
-            client = new WebSocket("ws://skypeaudioqe-vm.cloudapp.net:2012");
+            client = new WebSocket("ws://stickman.cloudapp.net:2012");
             client.Opened += new EventHandler(webSocketClient_Opened);
             client.Closed += new EventHandler(webSocketClient_Closed);
             client.MessageReceived += new EventHandler<MessageReceivedEventArgs>(webSocketClient_MessageReceived);
