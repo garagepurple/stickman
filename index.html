@@ -11,6 +11,7 @@
 </head>
 <body>
 <script src="scripts/three.min.js"></script>
+<script src="scripts/FirstPersonControls.js"></script>
 <script>
     var container;
     var colorsAvailable = new Array();
@@ -22,13 +23,14 @@
     var pointLight;
     
     var sphereRadius = 0.005;
-    var headRadius = 0.05;
+    var headRadius = 0.07;
 
     var mouseFactor = 0.005;    
     
     // this is a dictionnary of joints by player, formatted as such: <playerId, <jointName, sphere>>
     var playersJoints = {};
     
+    var controls;
     var clock = new THREE.Clock();
 
     var wsHost = "ws://stickman.cloudapp.net:2012";
@@ -38,8 +40,6 @@
     var mouseX = 0, mouseY = 0;
     var windowHalfX = window.innerWidth / 2;
 	var windowHalfY = window.innerHeight / 2;
-    document.addEventListener( 'mousemove', onDocumentMouseMove, false );
-
 
    /* var players = {"8": {
         "HipCenter":{"X":0.0,"Y":0.0,"Z":0.0},
@@ -214,9 +214,18 @@
         document.body.appendChild( container );
 
         camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.0001, 2000 );
-        camera.position.set(6, 0, -3);
+        camera.position.set(-5, 0, 0);
         camera.lookAt(0, 0, 0);
 
+        controls = new THREE.FirstPersonControls( camera );
+        controls.movementSpeed = 2;
+        controls.lookSpeed = 0.05;
+        controls.lookVertical = true;
+        controls.constrainVertical = false;
+        controls.verticalMin = 1.1;
+        controls.verticalMax = 2.2;
+        //controls.activeLook = false;
+        
         scene = new THREE.Scene();
 
         // Lights
@@ -236,12 +245,11 @@
 
     function onWindowResize()
     {
-        windowHalfX = window.innerWidth / 2;
-		windowHalfY = window.innerHeight / 2;
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
 
         renderer.setSize( window.innerWidth, window.innerHeight );
+        controls.handleResize();
     }
 
     
@@ -250,7 +258,7 @@
         requestAnimationFrame( animate );
         render();
     }
-    
+
     function removePlayerFromScene(playerId)
     {
         console.log("Removing player " + playerId);
@@ -282,12 +290,6 @@
         }
     }
 
-    function onDocumentMouseMove(event) 
-    {
-        mouseX = ( event.clientX - windowHalfX ) * mouseFactor;
-        mouseY = ( event.clientY - windowHalfY ) * mouseFactor;
-	}
-    
     function render() 
     {
         var timer = 0.0001 * Date.now();
@@ -295,13 +297,10 @@
         pointLight.position.x = Math.sin( timer * 7 ) * 300;
         pointLight.position.y = Math.cos( timer * 5 ) * 400;
         pointLight.position.z = Math.cos( timer * 3 ) * 300;
-        
-        camera.position.x += ( mouseX - camera.position.x ) * .05;
-        camera.position.y += ( mouseY - camera.position.y ) * .05;
-        camera.lookAt( scene.position );
-        
+               
         updateScene(players);
        
+        controls.update( clock.getDelta() );
         renderer.render( scene, camera );
     }
 
